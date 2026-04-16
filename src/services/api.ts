@@ -115,6 +115,18 @@ export const api = {
       if (error) throw error
     },
 
+    statusWebhook: async (
+      integracaoId: string
+    ): Promise<{
+      integracaoId: string
+      ultimoRecebimento: string | null
+      criadoEm: string
+      total24h: number
+      jaRecebeu: boolean
+    }> => {
+      return apiFetch(`/whatsapp/integracoes/${integracaoId}/status-webhook`)
+    },
+
     atualizarProduto: async (
       produtoId: string,
       dados: {

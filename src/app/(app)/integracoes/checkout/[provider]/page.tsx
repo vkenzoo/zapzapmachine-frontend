@@ -37,7 +37,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Copy, Check, MoreHorizontal, Loader2 } from 'lucide-react'
+import { Copy, Check, MoreHorizontal, Loader2, BookOpen } from 'lucide-react'
+import { ValidadorWebhook } from '@/components/integracoes/validador-webhook'
+import { GuiaHotmart } from '@/components/integracoes/guia-hotmart'
+import { GuiaKiwify } from '@/components/integracoes/guia-kiwify'
+import { GuiaTicto } from '@/components/integracoes/guia-ticto'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 export default function CheckoutDetailPage() {
   const { provider } = useParams<{ provider: string }>()
@@ -47,6 +57,7 @@ export default function CheckoutDetailPage() {
   const [desassociando, setDesassociando] = useState(false)
   const [copied, setCopied] = useState(false)
   const [produtoEdit, setProdutoEdit] = useState<ProdutoCheckout | null>(null)
+  const [guiaAberto, setGuiaAberto] = useState(false)
 
   const provedorKey = provider.toUpperCase() as ProvedorCheckout
   const provedorInfo = PROVEDORES[provedorKey]
@@ -157,9 +168,18 @@ export default function CheckoutDetailPage() {
           </div>
 
           <div>
-            <label className="text-[13px] font-medium mb-2 block">
-              URL do Webhook
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-[13px] font-medium">URL do Webhook</label>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 text-[11px] rounded-lg"
+                onClick={() => setGuiaAberto(true)}
+              >
+                <BookOpen className="h-3.5 w-3.5 mr-1.5" />
+                Ver guia
+              </Button>
+            </div>
             <div className="flex items-center gap-2">
               <code className="flex-1 bg-muted/50 px-3.5 py-2.5 rounded-xl text-[12px] break-all font-mono">
                 {integracao.webhookUrl}
@@ -178,6 +198,10 @@ export default function CheckoutDetailPage() {
                 )}
               </Button>
             </div>
+          </div>
+
+          <div className="mt-4">
+            <ValidadorWebhook integracaoId={integracao.id} variant="compact" />
           </div>
         </div>
 
@@ -350,6 +374,25 @@ export default function CheckoutDetailPage() {
         produto={produtoEdit}
         onSaved={recarregar}
       />
+
+      <Dialog open={guiaAberto} onOpenChange={setGuiaAberto}>
+        <DialogContent className="sm:max-w-xl rounded-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-[17px] tracking-[-0.01em]">
+              Guia de configuração — {provedorInfo.nome}
+            </DialogTitle>
+          </DialogHeader>
+          {provedorInfo.id === 'HOTMART' && (
+            <GuiaHotmart webhookUrl={integracao.webhookUrl} />
+          )}
+          {provedorInfo.id === 'KIWIFY' && (
+            <GuiaKiwify webhookUrl={integracao.webhookUrl} />
+          )}
+          {provedorInfo.id === 'TICTO' && (
+            <GuiaTicto webhookUrl={integracao.webhookUrl} />
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

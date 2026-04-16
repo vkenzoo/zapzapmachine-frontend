@@ -14,13 +14,25 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog'
-import { Copy, Check } from 'lucide-react'
 import { ProvedorLogo } from './provedor-logo'
+import { GuiaHotmart } from './guia-hotmart'
+import { GuiaKiwify } from './guia-kiwify'
+import { GuiaTicto } from './guia-ticto'
+import { ValidadorWebhook } from './validador-webhook'
 
 interface CheckoutProviderCardProps {
   provedor: ProvedorInfo
   integracao?: IntegracaoCheckout
   onIntegracaoCriada: () => void
+}
+
+const renderGuia = (
+  provedorId: 'HOTMART' | 'KIWIFY' | 'TICTO',
+  webhookUrl: string
+) => {
+  if (provedorId === 'HOTMART') return <GuiaHotmart webhookUrl={webhookUrl} />
+  if (provedorId === 'KIWIFY') return <GuiaKiwify webhookUrl={webhookUrl} />
+  return <GuiaTicto webhookUrl={webhookUrl} />
 }
 
 export const CheckoutProviderCard = ({
@@ -33,7 +45,6 @@ export const CheckoutProviderCard = ({
   const [loading, setLoading] = useState(false)
   const [novaIntegracao, setNovaIntegracao] =
     useState<IntegracaoCheckout | null>(null)
-  const [copied, setCopied] = useState(false)
 
   const isActive = !!integracao
 
@@ -51,19 +62,11 @@ export const CheckoutProviderCard = ({
     }
   }
 
-  const handleCopiar = async () => {
-    if (!novaIntegracao) return
-    await navigator.clipboard.writeText(novaIntegracao.webhookUrl)
-    setCopied(true)
-    toast.success('URL copiada!')
-    setTimeout(() => setCopied(false), 2000)
-  }
-
   const handleConcluir = () => {
     setDialogOpen(false)
     setNovaIntegracao(null)
     onIntegracaoCriada()
-    toast.success('Integração configurada com sucesso!')
+    toast.success('Integração configurada!')
   }
 
   return (
@@ -73,7 +76,9 @@ export const CheckoutProviderCard = ({
           <ProvedorLogo provedor={provedor.id} size={40} />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-0.5">
-              <h3 className="font-medium text-[14px] tracking-[-0.01em]">{provedor.nome}</h3>
+              <h3 className="font-medium text-[14px] tracking-[-0.01em]">
+                {provedor.nome}
+              </h3>
               {isActive && (
                 <Badge
                   variant="secondary"
@@ -113,14 +118,14 @@ export const CheckoutProviderCard = ({
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-lg rounded-2xl">
+        <DialogContent className="sm:max-w-xl rounded-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-[17px] tracking-[-0.01em]">
-              Integrar {provedor.nome}
+              Conectar {provedor.nome}
             </DialogTitle>
             <DialogDescription className="text-[13px]">
-              Configure o webhook no painel do {provedor.nome} para receber
-              notificações de transações.
+              Siga os passos abaixo para configurar o webhook no painel do{' '}
+              {provedor.nome}.
             </DialogDescription>
           </DialogHeader>
 
@@ -130,39 +135,9 @@ export const CheckoutProviderCard = ({
             </div>
           ) : novaIntegracao ? (
             <div className="space-y-5">
-              <div>
-                <label className="text-[13px] font-medium mb-2 block">
-                  URL do Webhook
-                </label>
-                <div className="flex items-center gap-2">
-                  <code className="flex-1 bg-muted/60 px-3.5 py-2.5 rounded-xl text-[12px] break-all font-mono">
-                    {novaIntegracao.webhookUrl}
-                  </code>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-9 w-9 rounded-xl shrink-0"
-                    onClick={handleCopiar}
-                    aria-label="Copiar URL"
-                  >
-                    {copied ? (
-                      <Check className="h-4 w-4 text-emerald-600" />
-                    ) : (
-                      <Copy className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
+              {renderGuia(provedor.id, novaIntegracao.webhookUrl)}
 
-              <div className="bg-muted/40 rounded-xl p-4">
-                <h4 className="text-[13px] font-medium mb-2.5">Como configurar:</h4>
-                <ol className="text-[13px] text-muted-foreground space-y-2 list-decimal list-inside leading-relaxed">
-                  <li>Acesse o painel do {provedor.nome}</li>
-                  <li>Vá em Configurações {'>'} Webhooks</li>
-                  <li>Cole a URL acima no campo de webhook</li>
-                  <li>Salve as configurações</li>
-                </ol>
-              </div>
+              <ValidadorWebhook integracaoId={novaIntegracao.id} />
 
               <Button
                 onClick={handleConcluir}
