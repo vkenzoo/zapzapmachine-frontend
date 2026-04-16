@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'RoboVendas',
+  title: 'GA Sales Machine',
   description: 'Agentes de IA que vendem no WhatsApp automaticamente',
 }
 

@@ -132,11 +132,11 @@ export default function ConversasPage() {
     setConversaSelecionadaId(null)
   }, [])
 
-  // Titulo dinamico: mostra "(3) RoboVendas" quando tem nao lidas
+  // Titulo dinamico: mostra "(3) GA Sales Machine" quando tem nao lidas
   useEffect(() => {
     const total = conversas.reduce((sum, c) => sum + (c.naoLidas ?? 0), 0)
-    document.title = total > 0 ? `(${total}) RoboVendas` : 'RoboVendas'
-    return () => { document.title = 'RoboVendas' }
+    document.title = total > 0 ? `(${total}) GA Sales Machine` : 'GA Sales Machine'
+    return () => { document.title = 'GA Sales Machine' }
   }, [conversas])
 
   // Realtime: lista de conversas atualiza automaticamente quando o backend

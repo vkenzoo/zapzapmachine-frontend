@@ -54,13 +54,13 @@ export default function LoginPage() {
   return (
     <div className="w-full max-w-[380px]">
       <div className="text-center mb-8">
-        <div className="mx-auto w-14 h-14 rounded-2xl bg-gradient-to-b from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20 mb-5">
-          <span className="text-white font-bold text-lg tracking-tight">RV</span>
+        <div className="mb-2">
+          <span className="font-bold text-[56px] tracking-[-0.05em] leading-none text-foreground">GA</span>
         </div>
-        <h1 className="text-[28px] font-semibold tracking-[-0.02em] text-foreground">
-          {APP_NAME}
+        <h1 className="text-[18px] font-medium tracking-[-0.01em] text-foreground">
+          Sales Machine
         </h1>
-        <p className="text-[14px] text-muted-foreground mt-1.5">
+        <p className="text-[14px] text-muted-foreground mt-2">
           Entre na sua conta para continuar
         </p>
       </div>

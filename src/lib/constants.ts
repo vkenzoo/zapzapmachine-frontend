@@ -25,7 +25,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
-export const APP_NAME = 'RoboVendas'
+export const APP_NAME = 'GA Sales Machine'
 
 export interface NavItem {
   label: string

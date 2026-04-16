@@ -38,13 +38,11 @@ const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
       <div className="px-5 pt-6 pb-5">
         <Link
           href="/dashboard"
-          className="flex items-center gap-2.5 group"
+          className="flex items-baseline gap-1.5 group"
           onClick={onNavigate}
         >
-          <div className="w-8 h-8 rounded-[10px] bg-gradient-to-b from-blue-500 to-blue-600 flex items-center justify-center shadow-sm">
-            <span className="text-white font-semibold text-xs tracking-tight">RV</span>
-          </div>
-          <span className="font-semibold text-[15px] tracking-[-0.01em]">{APP_NAME}</span>
+          <span className="font-bold text-[16px] tracking-[-0.03em] text-foreground">GA</span>
+          <span className="font-medium text-[13px] tracking-[-0.01em] text-muted-foreground">Sales Machine</span>
         </Link>
       </div>
 
