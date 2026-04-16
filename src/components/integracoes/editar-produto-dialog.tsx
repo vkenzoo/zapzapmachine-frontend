@@ -118,7 +118,7 @@ export const EditarProdutoDialog = ({
 
           <div className="space-y-1.5">
             <Label className="text-[13px]">Agente que vai atender</Label>
-            <Select value={agenteId} onValueChange={setAgenteId}>
+            <Select value={agenteId} onValueChange={(v) => { if (v !== null) setAgenteId(v) }}>
               <SelectTrigger className="rounded-xl text-[13px]">
                 <SelectValue placeholder={loadingAgentes ? 'Carregando...' : 'Selecione'} />
               </SelectTrigger>

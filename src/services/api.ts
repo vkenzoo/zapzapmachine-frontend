@@ -518,7 +518,7 @@ export const api = {
         const { agentes_bases: bases, ...agenteRow } = row as typeof row & {
           agentes_bases: { base_id: string }[]
         }
-        return agenteFromRow(agenteRow, bases?.map((b) => b.base_id) ?? [])
+        return agenteFromRow(agenteRow, bases?.map((b: { base_id: string }) => b.base_id) ?? [])
       })
     },
 
@@ -533,7 +533,7 @@ export const api = {
       const { agentes_bases: bases, ...agenteRow } = data as typeof data & {
         agentes_bases: { base_id: string }[]
       }
-      return agenteFromRow(agenteRow, bases?.map((b) => b.base_id) ?? [])
+      return agenteFromRow(agenteRow, bases?.map((b: { base_id: string }) => b.base_id) ?? [])
     },
 
     criar: async (dados: {
@@ -611,7 +611,7 @@ export const api = {
       const { agentes_bases: bases, ...agenteRow } = data as typeof data & {
         agentes_bases: { base_id: string }[]
       }
-      return agenteFromRow(agenteRow, bases?.map((b) => b.base_id) ?? [])
+      return agenteFromRow(agenteRow, bases?.map((b: { base_id: string }) => b.base_id) ?? [])
     },
 
     alternarStatus: async (id: string): Promise<Agente> => {
@@ -631,7 +631,7 @@ export const api = {
       const { agentes_bases: bases, ...agenteRow } = data as typeof data & {
         agentes_bases: { base_id: string }[]
       }
-      return agenteFromRow(agenteRow, bases?.map((b) => b.base_id) ?? [])
+      return agenteFromRow(agenteRow, bases?.map((b: { base_id: string }) => b.base_id) ?? [])
     },
 
     excluir: async (id: string): Promise<void> => {

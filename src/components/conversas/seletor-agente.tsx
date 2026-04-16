@@ -47,7 +47,8 @@ export const SeletorAgente = ({
     }
   }, [])
 
-  const handleChange = async (value: string) => {
+  const handleChange = async (value: string | null) => {
+    if (!value) return
     const id = value === AGENTE_NULL_VALUE ? null : value
     setSaving(true)
     try {
