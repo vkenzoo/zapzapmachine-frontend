@@ -644,9 +644,10 @@ export const api = {
 
   automacoes: {
     listar: async (): Promise<Automacao[]> => {
-      const res = await apiFetch('/whatsapp/automacoes')
-      const data = await res.json()
-      return (data as Array<Record<string, unknown>>).map((row) => ({
+      const data = await apiFetch<Array<Record<string, unknown>>>(
+        '/whatsapp/automacoes'
+      )
+      return data.map((row) => ({
         id: row.id as string,
         nome: row.nome as string,
         ativo: row.ativo as boolean,
@@ -713,11 +714,13 @@ export const api = {
     },
 
     uploadFoto: async (base64: string, mimetype: string): Promise<string> => {
-      const res = await apiFetch('/whatsapp/perfil/upload-foto', {
-        method: 'POST',
-        body: JSON.stringify({ base64, mimetype }),
-      })
-      const data = await res.json()
+      const data = await apiFetch<{ fotoUrl: string }>(
+        '/whatsapp/perfil/upload-foto',
+        {
+          method: 'POST',
+          body: JSON.stringify({ base64, mimetype }),
+        }
+      )
       return data.fotoUrl
     },
 

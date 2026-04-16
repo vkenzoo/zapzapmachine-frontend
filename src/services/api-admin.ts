@@ -109,14 +109,12 @@ interface Paginado<T> {
 
 export const apiAdmin = {
   stats: async (): Promise<AdminStats> => {
-    const res = await apiFetch('/admin/stats')
-    return res.json()
+    return apiFetch<AdminStats>('/admin/stats')
   },
 
   usuarios: {
     listar: async (): Promise<AdminUsuario[]> => {
-      const res = await apiFetch('/admin/usuarios')
-      return res.json()
+      return apiFetch<AdminUsuario[]>('/admin/usuarios')
     },
     alterarRole: async (id: string, role: RoleUsuario): Promise<void> => {
       await apiFetch(`/admin/usuarios/${id}/role`, {
@@ -128,30 +126,29 @@ export const apiAdmin = {
 
   ia: {
     gastos: async (): Promise<AdminGastos> => {
-      const res = await apiFetch('/admin/ia/gastos')
-      return res.json()
+      return apiFetch<AdminGastos>('/admin/ia/gastos')
     },
     gastosPorUsuario: async (): Promise<GastoPorUsuario[]> => {
-      const res = await apiFetch('/admin/ia/gastos-por-usuario')
-      return res.json()
+      return apiFetch<GastoPorUsuario[]>('/admin/ia/gastos-por-usuario')
     },
     logs: async (page = 1, limit = 50): Promise<Paginado<LogIA>> => {
-      const res = await apiFetch(`/admin/ia/logs?page=${page}&limit=${limit}`)
-      return res.json()
+      return apiFetch<Paginado<LogIA>>(
+        `/admin/ia/logs?page=${page}&limit=${limit}`
+      )
     },
   },
 
   checkout: {
     logs: async (page = 1, limit = 50): Promise<Paginado<LogCheckout>> => {
-      const res = await apiFetch(`/admin/checkout/logs?page=${page}&limit=${limit}`)
-      return res.json()
+      return apiFetch<Paginado<LogCheckout>>(
+        `/admin/checkout/logs?page=${page}&limit=${limit}`
+      )
     },
   },
 
   prompts: {
     listar: async (): Promise<ConfigPrompt[]> => {
-      const res = await apiFetch('/admin/prompts')
-      return res.json()
+      return apiFetch<ConfigPrompt[]>('/admin/prompts')
     },
     atualizar: async (
       chave: string,
