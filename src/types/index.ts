@@ -25,11 +25,27 @@ export interface Usuario {
 }
 
 export type EventoAutomacao =
+  // Compra
   | 'COMPRA_APROVADA'
   | 'COMPRA_RECUSADA'
   | 'REEMBOLSO'
-  | 'ASSINATURA_CANCELADA'
   | 'CARRINHO_ABANDONADO'
+  | 'ASSINATURA_CANCELADA'
+  // Pagamento pendente
+  | 'BOLETO_GERADO'
+  | 'PIX_GERADO'
+  | 'PIX_EXPIRADO'
+  | 'BOLETO_ATRASADO'
+  | 'PAGAMENTO_EXPIRADO'
+  // Problemas
+  | 'CHARGEBACK'
+  | 'PROTESTO'
+  | 'PAGAMENTO_ATRASADO'
+  // Assinaturas
+  | 'ASSINATURA_ATRASADA'
+  | 'ASSINATURA_RENOVADA'
+  | 'TRIAL_INICIADO'
+  | 'TRIAL_ENCERRADO'
 
 export interface Automacao {
   id: string

@@ -25,33 +25,145 @@ import {
 } from '@/components/ui/select'
 import { Loader2, Save, Zap } from 'lucide-react'
 
-const EVENTOS: { value: EventoAutomacao; label: string; descricao: string }[] = [
+interface EventoItem {
+  value: EventoAutomacao
+  label: string
+  descricao: string
+  provedores: string // Quais provedores suportam (pra badge)
+}
+
+interface EventoGrupo {
+  titulo: string
+  eventos: EventoItem[]
+}
+
+const EVENTOS_GRUPOS: EventoGrupo[] = [
   {
-    value: 'COMPRA_APROVADA',
-    label: 'Compra aprovada',
-    descricao: 'Cliente completou o pagamento',
+    titulo: 'Compra',
+    eventos: [
+      {
+        value: 'COMPRA_APROVADA',
+        label: 'Compra aprovada',
+        descricao: 'Cliente completou o pagamento',
+        provedores: 'Todos',
+      },
+      {
+        value: 'COMPRA_RECUSADA',
+        label: 'Compra recusada',
+        descricao: 'Pagamento falhou ou foi recusado',
+        provedores: 'Todos',
+      },
+      {
+        value: 'REEMBOLSO',
+        label: 'Reembolso',
+        descricao: 'Cliente pediu devolução',
+        provedores: 'Todos',
+      },
+      {
+        value: 'CARRINHO_ABANDONADO',
+        label: 'Carrinho abandonado',
+        descricao: 'Iniciou checkout mas não finalizou',
+        provedores: 'Todos',
+      },
+      {
+        value: 'ASSINATURA_CANCELADA',
+        label: 'Assinatura cancelada',
+        descricao: 'Cliente cancelou a assinatura',
+        provedores: 'Todos',
+      },
+    ],
   },
   {
-    value: 'COMPRA_RECUSADA',
-    label: 'Compra recusada',
-    descricao: 'Pagamento falhou',
+    titulo: 'Pagamento pendente',
+    eventos: [
+      {
+        value: 'BOLETO_GERADO',
+        label: 'Boleto gerado',
+        descricao: 'Cliente gerou boleto (ainda não pagou)',
+        provedores: 'Todos',
+      },
+      {
+        value: 'PIX_GERADO',
+        label: 'Pix gerado',
+        descricao: 'Cliente gerou código Pix (ainda não pagou)',
+        provedores: 'Kiwify, Ticto',
+      },
+      {
+        value: 'PIX_EXPIRADO',
+        label: 'Pix expirado',
+        descricao: 'Código Pix expirou sem pagamento',
+        provedores: 'Ticto',
+      },
+      {
+        value: 'BOLETO_ATRASADO',
+        label: 'Boleto atrasado',
+        descricao: 'Vencimento do boleto passou sem pagamento',
+        provedores: 'Ticto',
+      },
+      {
+        value: 'PAGAMENTO_EXPIRADO',
+        label: 'Pagamento expirado',
+        descricao: 'Prazo de pagamento encerrou',
+        provedores: 'Hotmart',
+      },
+    ],
   },
   {
-    value: 'REEMBOLSO',
-    label: 'Reembolso',
-    descricao: 'Cliente pediu devolução',
+    titulo: 'Problemas',
+    eventos: [
+      {
+        value: 'CHARGEBACK',
+        label: 'Chargeback',
+        descricao: 'Cliente contestou a compra no cartão',
+        provedores: 'Todos',
+      },
+      {
+        value: 'PROTESTO',
+        label: 'Protesto',
+        descricao: 'Compra foi protestada',
+        provedores: 'Hotmart',
+      },
+      {
+        value: 'PAGAMENTO_ATRASADO',
+        label: 'Pagamento atrasado',
+        descricao: 'Pagamento recorrente ficou em atraso',
+        provedores: 'Hotmart',
+      },
+    ],
   },
   {
-    value: 'ASSINATURA_CANCELADA',
-    label: 'Assinatura cancelada',
-    descricao: 'Cliente cancelou a assinatura',
-  },
-  {
-    value: 'CARRINHO_ABANDONADO',
-    label: 'Carrinho abandonado',
-    descricao: 'Iniciou checkout mas não finalizou',
+    titulo: 'Assinaturas',
+    eventos: [
+      {
+        value: 'ASSINATURA_ATRASADA',
+        label: 'Assinatura atrasada',
+        descricao: 'Cobrança recorrente falhou',
+        provedores: 'Kiwify, Ticto',
+      },
+      {
+        value: 'ASSINATURA_RENOVADA',
+        label: 'Assinatura renovada',
+        descricao: 'Cobrança recorrente aprovada',
+        provedores: 'Kiwify, Ticto',
+      },
+      {
+        value: 'TRIAL_INICIADO',
+        label: 'Trial iniciado',
+        descricao: 'Cliente começou período de testes',
+        provedores: 'Ticto',
+      },
+      {
+        value: 'TRIAL_ENCERRADO',
+        label: 'Trial encerrado',
+        descricao: 'Período de testes terminou',
+        provedores: 'Ticto',
+      },
+    ],
   },
 ]
+
+/** Flat list pra lookup rápido */
+const EVENTOS: EventoItem[] = EVENTOS_GRUPOS.flatMap((g) => g.eventos)
 
 const PROVEDORES = [
   { value: 'HOTMART', label: 'Hotmart' },
@@ -229,15 +341,27 @@ export const FormularioAutomacao = ({ automacao }: Props) => {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {EVENTOS.map((e) => (
-                <SelectItem key={e.value} value={e.value}>
-                  <div className="flex flex-col">
-                    <span className="text-[13px] font-medium">{e.label}</span>
-                    <span className="text-[11px] text-muted-foreground">
-                      {e.descricao}
-                    </span>
+              {EVENTOS_GRUPOS.map((grupo) => (
+                <div key={grupo.titulo}>
+                  <div className="px-2 pt-2 pb-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    {grupo.titulo}
                   </div>
-                </SelectItem>
+                  {grupo.eventos.map((e) => (
+                    <SelectItem key={e.value} value={e.value}>
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[13px] font-medium">{e.label}</span>
+                          <span className="text-[9px] text-muted-foreground bg-muted/60 rounded px-1 py-[1px] uppercase tracking-wide">
+                            {e.provedores}
+                          </span>
+                        </div>
+                        <span className="text-[11px] text-muted-foreground">
+                          {e.descricao}
+                        </span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </div>
               ))}
             </SelectContent>
           </Select>
@@ -342,8 +466,16 @@ export const FormularioAutomacao = ({ automacao }: Props) => {
             className="rounded-xl text-[14px] font-mono"
           />
           <p className="text-[11px] text-muted-foreground">
-            Placeholders disponíveis: {'{nome}'}, {'{produto}'}, {'{email}'}. Deixe em
-            branco para não enviar mensagem (só criar a conversa).
+            Placeholders disponíveis: <code className="text-[10px]">{'{nome}'}</code>,{' '}
+            <code className="text-[10px]">{'{produto}'}</code>,{' '}
+            <code className="text-[10px]">{'{email}'}</code>,{' '}
+            <code className="text-[10px]">{'{valor}'}</code>,{' '}
+            <code className="text-[10px]">{'{metodo_pagamento}'}</code>,{' '}
+            <code className="text-[10px]">{'{parcelas}'}</code>,{' '}
+            <code className="text-[10px]">{'{link_acesso}'}</code>,{' '}
+            <code className="text-[10px]">{'{boleto_url}'}</code>,{' '}
+            <code className="text-[10px]">{'{pix_codigo}'}</code>. Deixe em branco para
+            não enviar mensagem (só criar a conversa).
           </p>
         </div>
 
