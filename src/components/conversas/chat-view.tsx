@@ -76,8 +76,23 @@ export const ChatView = ({
     }
   }
 
+  // Smart scroll: so auto-scroll se ja estava perto do fundo (< 150px)
+  const wasAtBottomRef = useRef(true)
+
+  // Rastreia posicao do scroll
   useEffect(() => {
-    if (scrollRef.current) {
+    const el = scrollRef.current
+    if (!el) return
+    const onScroll = () => {
+      wasAtBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 150
+    }
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => el.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // Scroll quando mensagens mudam (so se estava no fundo)
+  useEffect(() => {
+    if (scrollRef.current && wasAtBottomRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
   }, [mensagens])

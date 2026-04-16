@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { toast } from 'sonner'
 import { api } from '@/services/api'
 import type { Conversa, Mensagem } from '@/types'
@@ -19,6 +19,25 @@ export default function ConversasPage() {
   const [conversaSelecionadaId, setConversaSelecionadaId] = useState<string | null>(null)
   const [loadingConversas, setLoadingConversas] = useState(true)
   const [loadingMensagens, setLoadingMensagens] = useState(false)
+
+  // Som de notificacao (cria AudioContext uma unica vez)
+  const audioCtxRef = useRef<AudioContext | null>(null)
+  const tocarSom = useCallback(() => {
+    try {
+      if (!audioCtxRef.current) audioCtxRef.current = new AudioContext()
+      const ctx = audioCtxRef.current
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.frequency.setValueAtTime(880, ctx.currentTime)
+      osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.08)
+      gain.gain.setValueAtTime(0.15, ctx.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25)
+      osc.start(ctx.currentTime)
+      osc.stop(ctx.currentTime + 0.25)
+    } catch { /* browser pode bloquear audio antes de interacao */ }
+  }, [])
 
   const carregarConversas = useCallback(async () => {
     const data = await api.conversas.listar()
@@ -48,12 +67,14 @@ export default function ConversasPage() {
 
   const handleEnviar = useCallback(async (conteudo: string) => {
     if (!conversaSelecionadaId) return
-    const nova = await api.conversas.enviarMensagem(conversaSelecionadaId, conteudo, 'OUTGOING_HUMANO')
-    setMensagens((prev) => [...prev, nova])
-
-    // Atualiza lista para reordenar
-    const updatedList = await api.conversas.listar()
-    setConversas(updatedList)
+    try {
+      const nova = await api.conversas.enviarMensagem(conversaSelecionadaId, conteudo, 'OUTGOING_HUMANO')
+      setMensagens((prev) => [...prev, nova])
+      const updatedList = await api.conversas.listar()
+      setConversas(updatedList)
+    } catch {
+      toast.error('Erro ao enviar mensagem. Tente novamente.')
+    }
   }, [conversaSelecionadaId])
 
   const handleEnviarMidia = useCallback(
@@ -65,10 +86,14 @@ export default function ConversasPage() {
       legenda?: string
     }) => {
       if (!conversaSelecionadaId) return
-      const nova = await api.conversas.enviarMidia(conversaSelecionadaId, params)
-      setMensagens((prev) => [...prev, nova])
-      const updatedList = await api.conversas.listar()
-      setConversas(updatedList)
+      try {
+        const nova = await api.conversas.enviarMidia(conversaSelecionadaId, params)
+        setMensagens((prev) => [...prev, nova])
+        const updatedList = await api.conversas.listar()
+        setConversas(updatedList)
+      } catch {
+        toast.error('Erro ao enviar mídia. Tente novamente.')
+      }
     },
     [conversaSelecionadaId]
   )
@@ -107,20 +132,30 @@ export default function ConversasPage() {
     setConversaSelecionadaId(null)
   }, [])
 
+  // Titulo dinamico: mostra "(3) RoboVendas" quando tem nao lidas
+  useEffect(() => {
+    const total = conversas.reduce((sum, c) => sum + (c.naoLidas ?? 0), 0)
+    document.title = total > 0 ? `(${total}) RoboVendas` : 'RoboVendas'
+    return () => { document.title = 'RoboVendas' }
+  }, [conversas])
+
   // Realtime: lista de conversas atualiza automaticamente quando o backend
   // insere/atualiza (nova mensagem recebida, status muda, etc).
   useRealtimeConversas(usuario?.id, carregarConversas)
 
-  // Realtime: mensagens da conversa aberta. Se a mensagem ja esta no state
-  // (foi inserida por handleEnviar), ignoramos pra nao duplicar.
+  // Realtime: mensagens da conversa aberta + som em INCOMING
   useRealtimeMensagens(
     conversaSelecionadaId ?? undefined,
     useCallback((nova) => {
       setMensagens((prev) => {
         if (prev.some((m) => m.id === nova.id)) return prev
+        // Som de notificacao em mensagens recebidas (INCOMING ou OUTGOING_IA)
+        if (nova.tipo === 'INCOMING' || nova.tipo === 'OUTGOING_IA') {
+          tocarSom()
+        }
         return [...prev, nova]
       })
-    }, [])
+    }, [tocarSom])
   )
 
   return (
