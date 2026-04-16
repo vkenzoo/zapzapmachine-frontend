@@ -5,15 +5,26 @@ import {
   useState,
   useEffect,
   useCallback,
+  useMemo,
   type ReactNode,
 } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Usuario } from '@/types'
 import { createClient } from '@/lib/supabase/client'
+import { apiFetch } from '@/lib/backend'
+
+const pingLogin = async (): Promise<void> => {
+  try {
+    await apiFetch('/whatsapp/ping-login', { method: 'POST' })
+  } catch {
+    // fire-and-forget
+  }
+}
 
 interface AuthContextType {
   usuario: Usuario | null
   isLoading: boolean
+  isAdmin: boolean
   login: (email: string, senha: string) => Promise<void>
   signup: (email: string, senha: string, nome: string) => Promise<void>
   logout: () => Promise<void>
@@ -27,7 +38,7 @@ const supabase = createClient()
 const carregarPerfil = async (userId: string, email: string): Promise<Usuario | null> => {
   const { data } = await supabase
     .from('usuarios')
-    .select('id, nome, foto_url, agentes_desligados, plano, status, criado_em')
+    .select('id, nome, foto_url, agentes_desligados, role, ultimo_login, plano, status, criado_em')
     .eq('id', userId)
     .single()
 
@@ -39,6 +50,8 @@ const carregarPerfil = async (userId: string, email: string): Promise<Usuario | 
     nome: data.nome,
     fotoUrl: data.foto_url ?? null,
     agentesDesligados: data.agentes_desligados ?? false,
+    role: (data.role as Usuario['role']) ?? 'USER',
+    ultimoLogin: data.ultimo_login ?? null,
     plano: data.plano as Usuario['plano'],
     status: data.status as Usuario['status'],
     criadoEm: data.criado_em,
@@ -56,6 +69,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (session?.user) {
         const perfil = await carregarPerfil(session.user.id, session.user.email ?? '')
         setUsuario(perfil)
+        pingLogin()
       }
       setIsLoading(false)
     })
@@ -66,6 +80,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (event === 'SIGNED_IN' && session?.user) {
           const perfil = await carregarPerfil(session.user.id, session.user.email ?? '')
           setUsuario(perfil)
+          pingLogin()
         } else if (event === 'SIGNED_OUT') {
           setUsuario(null)
         }
@@ -113,8 +128,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     []
   )
 
+  const isAdmin = useMemo(() => usuario?.role === 'ADMIN', [usuario])
+
   return (
-    <AuthContext.Provider value={{ usuario, isLoading, login, signup, logout, atualizarPerfil }}>
+    <AuthContext.Provider value={{ usuario, isLoading, isAdmin, login, signup, logout, atualizarPerfil }}>
       {children}
     </AuthContext.Provider>
   )

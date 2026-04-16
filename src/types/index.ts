@@ -9,12 +9,16 @@ export type ProvedorCheckout =
 export type StatusIntegracao = 'ATIVO' | 'INATIVO' | 'ERRO'
 export type StatusWhatsapp = 'DESCONECTADO' | 'CONECTANDO' | 'CONECTADO' | 'ERRO'
 
+export type RoleUsuario = 'USER' | 'ADMIN'
+
 export interface Usuario {
   id: string
   email: string
   nome: string
   fotoUrl?: string | null
   agentesDesligados?: boolean
+  role?: RoleUsuario
+  ultimoLogin?: string | null
   plano: Plano
   status: StatusCliente
   criadoEm: string

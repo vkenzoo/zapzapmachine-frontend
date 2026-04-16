@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/hooks/use-auth'
 import { APP_NAME, SIDEBAR_NAV_ITEMS, SIDEBAR_FOOTER_ITEMS } from '@/lib/constants'
-import { LogOut, ChevronDown } from 'lucide-react'
+import { LogOut, ChevronDown, Shield } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Collapsible,
@@ -19,7 +19,7 @@ import { Menu } from 'lucide-react'
 
 const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
   const pathname = usePathname()
-  const { usuario, logout } = useAuth()
+  const { usuario, logout, isAdmin } = useAuth()
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     'Integrações': true,
   })
@@ -121,6 +121,16 @@ const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
 
       <div className="px-3 py-3 space-y-0.5">
         <div className="h-px bg-border/50 mx-2 mb-2" />
+        {isAdmin && (
+          <Link
+            href="/admin"
+            onClick={onNavigate}
+            className="flex items-center gap-2.5 rounded-xl px-3 py-[7px] text-[13px] text-orange-700 hover:bg-orange-500/10 transition-all duration-200"
+          >
+            <Shield className="h-[16px] w-[16px] shrink-0 opacity-80" />
+            <span className="font-medium">Admin</span>
+          </Link>
+        )}
         {SIDEBAR_FOOTER_ITEMS.map((item) => (
           <Link
             key={item.label}
