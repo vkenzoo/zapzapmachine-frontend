@@ -13,6 +13,8 @@ export interface Usuario {
   id: string
   email: string
   nome: string
+  fotoUrl?: string | null
+  agentesDesligados?: boolean
   plano: Plano
   status: StatusCliente
   criadoEm: string

@@ -67,7 +67,7 @@ export const SIDEBAR_NAV_ITEMS: NavItem[] = [
 
 export const SIDEBAR_FOOTER_ITEMS: NavItem[] = [
   { label: 'Ajuda', href: '#', icon: HelpCircle },
-  { label: 'Configurações', href: '#', icon: Settings },
+  { label: 'Configurações', href: '/configuracoes', icon: Settings },
 ]
 
 export const PROVEDORES: Record<ProvedorCheckout, ProvedorInfo> = {

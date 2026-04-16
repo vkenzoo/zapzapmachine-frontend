@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/hooks/use-auth'
 import { APP_NAME, SIDEBAR_NAV_ITEMS, SIDEBAR_FOOTER_ITEMS } from '@/lib/constants'
 import { LogOut, ChevronDown } from 'lucide-react'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Collapsible,
   CollapsibleContent,
@@ -147,6 +147,7 @@ const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
 
         <div className="flex items-center gap-2.5 px-3 pt-3 pb-1">
           <Avatar className="h-7 w-7">
+            {usuario?.fotoUrl && <AvatarImage src={usuario.fotoUrl} alt={usuario.nome} />}
             <AvatarFallback className="bg-gradient-to-b from-blue-500 to-blue-600 text-white text-[10px] font-semibold">
               {usuario?.nome?.charAt(0) ?? 'U'}
             </AvatarFallback>

@@ -17,6 +17,7 @@ interface AuthContextType {
   login: (email: string, senha: string) => Promise<void>
   signup: (email: string, senha: string, nome: string) => Promise<void>
   logout: () => Promise<void>
+  atualizarPerfil: (dados: Partial<Pick<Usuario, 'nome' | 'fotoUrl' | 'agentesDesligados'>>) => void
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null)
@@ -26,7 +27,7 @@ const supabase = createClient()
 const carregarPerfil = async (userId: string, email: string): Promise<Usuario | null> => {
   const { data } = await supabase
     .from('usuarios')
-    .select('id, nome, plano, status, criado_em')
+    .select('id, nome, foto_url, agentes_desligados, plano, status, criado_em')
     .eq('id', userId)
     .single()
 
@@ -36,6 +37,8 @@ const carregarPerfil = async (userId: string, email: string): Promise<Usuario | 
     id: data.id,
     email,
     nome: data.nome,
+    fotoUrl: data.foto_url ?? null,
+    agentesDesligados: data.agentes_desligados ?? false,
     plano: data.plano as Usuario['plano'],
     status: data.status as Usuario['status'],
     criadoEm: data.criado_em,
@@ -103,8 +106,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     router.refresh()
   }, [router])
 
+  const atualizarPerfil = useCallback(
+    (dados: Partial<Pick<Usuario, 'nome' | 'fotoUrl' | 'agentesDesligados'>>) => {
+      setUsuario((prev) => (prev ? { ...prev, ...dados } : prev))
+    },
+    []
+  )
+
   return (
-    <AuthContext.Provider value={{ usuario, isLoading, login, signup, logout }}>
+    <AuthContext.Provider value={{ usuario, isLoading, login, signup, logout, atualizarPerfil }}>
       {children}
     </AuthContext.Provider>
   )

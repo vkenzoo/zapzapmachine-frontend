@@ -639,4 +639,29 @@ export const api = {
       if (error) throw error
     },
   },
+
+  perfil: {
+    atualizar: async (dados: { nome?: string }): Promise<void> => {
+      await apiFetch('/whatsapp/perfil', {
+        method: 'PATCH',
+        body: JSON.stringify(dados),
+      })
+    },
+
+    uploadFoto: async (base64: string, mimetype: string): Promise<string> => {
+      const res = await apiFetch('/whatsapp/perfil/upload-foto', {
+        method: 'POST',
+        body: JSON.stringify({ base64, mimetype }),
+      })
+      const data = await res.json()
+      return data.fotoUrl
+    },
+
+    toggleAgentes: async (desligar: boolean): Promise<void> => {
+      await apiFetch('/whatsapp/toggle-agentes', {
+        method: 'POST',
+        body: JSON.stringify({ desligar }),
+      })
+    },
+  },
 }

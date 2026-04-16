@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/hooks/use-auth'
 import { MobileSidebar } from './sidebar'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,9 +11,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { LogOut, User } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 export const Topbar = () => {
   const { usuario, logout } = useAuth()
+  const router = useRouter()
 
   return (
     <header className="h-12 border-b border-border/50 bg-card/60 frosted-glass flex items-center justify-between px-4 shrink-0 sticky top-0 z-10">
@@ -32,6 +34,7 @@ export const Topbar = () => {
             }
           >
             <Avatar className="h-7 w-7">
+              {usuario?.fotoUrl && <AvatarImage src={usuario.fotoUrl} alt={usuario.nome} />}
               <AvatarFallback className="bg-gradient-to-b from-blue-500 to-blue-600 text-white text-[10px] font-semibold">
                 {usuario?.nome?.charAt(0) ?? 'U'}
               </AvatarFallback>
@@ -41,7 +44,10 @@ export const Topbar = () => {
             </span>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48 rounded-xl">
-            <DropdownMenuItem disabled className="text-[13px] rounded-lg">
+            <DropdownMenuItem
+              className="text-[13px] rounded-lg cursor-pointer"
+              onClick={() => router.push('/configuracoes')}
+            >
               <User className="mr-2 h-4 w-4 opacity-60" />
               Meu perfil
             </DropdownMenuItem>
