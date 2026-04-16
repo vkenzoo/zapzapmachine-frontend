@@ -11,6 +11,7 @@ import {
   CreditCard,
   LogOut,
   ArrowLeft,
+  ListChecks,
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -27,6 +28,7 @@ const ADMIN_NAV: AdminNavItem[] = [
   { label: 'Usuários', href: '/admin/usuarios', icon: Users },
   { label: 'Controle IA', href: '/admin/ia/controle', icon: Sparkles },
   { label: 'Gastos IA', href: '/admin/ia/gastos', icon: DollarSign },
+  { label: 'Auditoria Eventos', href: '/admin/auditoria/eventos', icon: ListChecks },
   { label: 'Auditoria IA', href: '/admin/ia/logs', icon: FileText },
   { label: 'Auditoria Checkout', href: '/admin/checkout/logs', icon: CreditCard },
 ]

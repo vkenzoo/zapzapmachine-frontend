@@ -90,6 +90,27 @@ export interface LogCheckout {
   criado_em: string
 }
 
+export interface LogEvento {
+  id: string
+  user_id: string | null
+  user_nome: string | null
+  categoria: string
+  acao: string
+  recurso_tipo: string | null
+  recurso_id: string | null
+  descricao: string | null
+  detalhes: Record<string, unknown> | null
+  ip: string | null
+  criado_em: string
+}
+
+export interface EventosStats {
+  periodo: string
+  total: number
+  porCategoria: { categoria: string; count: number }[]
+  porAcao: { acao: string; count: number }[]
+}
+
 export interface ConfigPrompt {
   id: string
   chave: string
@@ -143,6 +164,27 @@ export const apiAdmin = {
       return apiFetch<Paginado<LogCheckout>>(
         `/admin/checkout/logs?page=${page}&limit=${limit}`
       )
+    },
+  },
+
+  eventos: {
+    logs: async (params: {
+      page?: number
+      limit?: number
+      categoria?: string
+      userId?: string
+      search?: string
+    } = {}): Promise<Paginado<LogEvento>> => {
+      const qs = new URLSearchParams()
+      qs.set('page', String(params.page ?? 1))
+      qs.set('limit', String(params.limit ?? 50))
+      if (params.categoria) qs.set('categoria', params.categoria)
+      if (params.userId) qs.set('userId', params.userId)
+      if (params.search) qs.set('search', params.search)
+      return apiFetch<Paginado<LogEvento>>(`/admin/eventos/logs?${qs}`)
+    },
+    stats: async (): Promise<EventosStats> => {
+      return apiFetch<EventosStats>('/admin/eventos/stats')
     },
   },
 
