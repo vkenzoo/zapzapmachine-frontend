@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { toast } from 'sonner'
 import { api } from '@/services/api'
 import type { ProdutoCheckout } from '@/types'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -92,14 +93,15 @@ export const EditarProdutoDialog = ({
                   A partir de agora, quem atende esse produto e o que é enviado ao cliente é definido pelas automações. Você pode criar múltiplas automações para o mesmo produto (ex: boas-vindas imediata + follow-up 24h depois).
                 </p>
               </div>
-              <Button
-                asChild
-                variant="outline"
-                size="sm"
-                className="rounded-lg text-[12px] h-7"
+              <Link
+                href="/automacoes"
+                className={cn(
+                  buttonVariants({ variant: 'outline', size: 'sm' }),
+                  'rounded-lg text-[12px] h-7'
+                )}
               >
-                <Link href="/automacoes">Abrir Automações</Link>
-              </Button>
+                Abrir Automações
+              </Link>
             </div>
           </div>
         </div>

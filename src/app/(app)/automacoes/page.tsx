@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { toast } from 'sonner'
 import { api } from '@/services/api'
 import type { Automacao } from '@/types'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
@@ -94,12 +95,13 @@ export default function AutomacoesPage() {
             </p>
           </div>
         </div>
-        <Button asChild className="rounded-xl">
-          <Link href="/automacoes/criar">
-            <Plus className="h-4 w-4 mr-1.5" />
-            Nova automação
-          </Link>
-        </Button>
+        <Link
+          href="/automacoes/criar"
+          className={cn(buttonVariants(), 'rounded-xl')}
+        >
+          <Plus className="h-4 w-4 mr-1.5" />
+          Nova automação
+        </Link>
       </div>
 
       {loading ? (
@@ -118,12 +120,13 @@ export default function AutomacoesPage() {
             Crie sua primeira automação para disparar mensagens automaticamente
             quando eventos acontecerem.
           </p>
-          <Button asChild className="rounded-xl">
-            <Link href="/automacoes/criar">
-              <Plus className="h-4 w-4 mr-1.5" />
-              Criar primeira automação
-            </Link>
-          </Button>
+          <Link
+            href="/automacoes/criar"
+            className={cn(buttonVariants(), 'rounded-xl')}
+          >
+            <Plus className="h-4 w-4 mr-1.5" />
+            Criar primeira automação
+          </Link>
         </div>
       ) : (
         <div className="grid gap-3">
@@ -174,19 +177,16 @@ export default function AutomacoesPage() {
                     checked={auto.ativo}
                     onCheckedChange={(v) => handleToggleAtivo(auto.id, v)}
                   />
-                  <Button
-                    asChild
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 rounded-lg"
+                  <Link
+                    href={`/automacoes/${auto.id}`}
+                    aria-label={`Editar ${auto.nome}`}
+                    className={cn(
+                      buttonVariants({ variant: 'ghost', size: 'icon' }),
+                      'h-8 w-8 rounded-lg'
+                    )}
                   >
-                    <Link
-                      href={`/automacoes/${auto.id}`}
-                      aria-label={`Editar ${auto.nome}`}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Link>
-                  </Button>
+                    <Pencil className="h-4 w-4" />
+                  </Link>
                   <AlertDialog>
                     <AlertDialogTrigger
                       render={
