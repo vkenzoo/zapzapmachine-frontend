@@ -21,6 +21,7 @@ import {
   Settings2,
   Sliders,
   MessageCircle,
+  Zap,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -62,6 +63,11 @@ export const SIDEBAR_NAV_ITEMS: NavItem[] = [
     label: 'Agentes',
     href: '/agentes',
     icon: Bot,
+  },
+  {
+    label: 'Automações',
+    href: '/automacoes',
+    icon: Zap,
   },
 ]
 

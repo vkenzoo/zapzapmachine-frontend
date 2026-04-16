@@ -20,6 +20,28 @@ export interface Usuario {
   criadoEm: string
 }
 
+export type EventoAutomacao =
+  | 'COMPRA_APROVADA'
+  | 'COMPRA_RECUSADA'
+  | 'REEMBOLSO'
+  | 'ASSINATURA_CANCELADA'
+  | 'CARRINHO_ABANDONADO'
+
+export interface Automacao {
+  id: string
+  nome: string
+  ativo: boolean
+  evento: EventoAutomacao
+  provedor: ProvedorCheckout | null
+  produtoId: string | null
+  agenteId: string | null
+  mensagemInicial: string | null
+  delayMinutos: number
+  executarSeExiste: boolean
+  criadoEm: string
+  atualizadoEm: string
+}
+
 export interface ProvedorInfo {
   id: ProvedorCheckout
   nome: string

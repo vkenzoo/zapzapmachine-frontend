@@ -11,6 +11,8 @@ import type {
   Agente,
   ObjetivoAgente,
   ConfigAgente,
+  Automacao,
+  EventoAutomacao,
 } from '@/types'
 import { CORES_AVATAR_AGENTE, PROVEDORES } from '@/lib/constants'
 import { criarBaseConhecimentoVazia } from '@/lib/base-conhecimento-utils'
@@ -637,6 +639,68 @@ export const api = {
     excluir: async (id: string): Promise<void> => {
       const { error } = await supabase.from('agentes').delete().eq('id', id)
       if (error) throw error
+    },
+  },
+
+  automacoes: {
+    listar: async (): Promise<Automacao[]> => {
+      const res = await apiFetch('/whatsapp/automacoes')
+      const data = await res.json()
+      return (data as Array<Record<string, unknown>>).map((row) => ({
+        id: row.id as string,
+        nome: row.nome as string,
+        ativo: row.ativo as boolean,
+        evento: row.evento as EventoAutomacao,
+        provedor: row.provedor as ProvedorCheckout | null,
+        produtoId: row.produto_id as string | null,
+        agenteId: row.agente_id as string | null,
+        mensagemInicial: row.mensagem_inicial as string | null,
+        delayMinutos: (row.delay_minutos as number) ?? 0,
+        executarSeExiste: (row.executar_se_existe as boolean) ?? false,
+        criadoEm: row.criado_em as string,
+        atualizadoEm: row.atualizado_em as string,
+      }))
+    },
+
+    criar: async (dados: {
+      nome: string
+      evento: EventoAutomacao
+      provedor?: ProvedorCheckout | null
+      produtoId?: string | null
+      agenteId?: string | null
+      mensagemInicial?: string | null
+      delayMinutos?: number
+      executarSeExiste?: boolean
+      ativo?: boolean
+    }): Promise<void> => {
+      await apiFetch('/whatsapp/automacoes', {
+        method: 'POST',
+        body: JSON.stringify(dados),
+      })
+    },
+
+    atualizar: async (
+      id: string,
+      dados: Partial<{
+        nome: string
+        evento: EventoAutomacao
+        provedor: ProvedorCheckout | null
+        produtoId: string | null
+        agenteId: string | null
+        mensagemInicial: string | null
+        delayMinutos: number
+        executarSeExiste: boolean
+        ativo: boolean
+      }>
+    ): Promise<void> => {
+      await apiFetch(`/whatsapp/automacoes/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(dados),
+      })
+    },
+
+    deletar: async (id: string): Promise<void> => {
+      await apiFetch(`/whatsapp/automacoes/${id}`, { method: 'DELETE' })
     },
   },
 

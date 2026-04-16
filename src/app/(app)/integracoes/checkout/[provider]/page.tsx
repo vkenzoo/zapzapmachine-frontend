@@ -207,8 +207,6 @@ export default function CheckoutDetailPage() {
                   <TableRow className="border-border/50">
                     <TableHead className="text-[12px] font-medium">Nome</TableHead>
                     <TableHead className="text-[12px] font-medium">ID</TableHead>
-                    <TableHead className="text-[12px] font-medium">Agente</TableHead>
-                    <TableHead className="text-[12px] font-medium">1a msg</TableHead>
                     <TableHead className="text-right text-[12px] font-medium">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -220,24 +218,6 @@ export default function CheckoutDetailPage() {
                       </TableCell>
                       <TableCell className="text-muted-foreground font-mono text-[11px]">
                         {produto.idExternoProduto}
-                      </TableCell>
-                      <TableCell className="text-[12px]">
-                        {produto.agenteVinculadoId ? (
-                          <Badge variant="secondary" className="bg-blue-500/10 text-blue-700 text-[10px] rounded-md">
-                            Vinculado
-                          </Badge>
-                        ) : (
-                          <span className="text-muted-foreground">Nenhum</span>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-[12px]">
-                        {produto.templatePrimeiraMensagem ? (
-                          <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-700 text-[10px] rounded-md">
-                            Configurada
-                          </Badge>
-                        ) : (
-                          <span className="text-muted-foreground">Sem template</span>
-                        )}
                       </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
