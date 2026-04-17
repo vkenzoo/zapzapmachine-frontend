@@ -76,10 +76,12 @@ export const api = {
     obterCheckout: async (
       id: string
     ): Promise<IntegracaoCheckout | null> => {
+      const userId = await getUserId()
       const { data, error } = await supabase
         .from('integracoes_checkout')
         .select('*, produtos_checkout(*)')
         .eq('id', id)
+        .eq('user_id', userId) // defesa em profundidade: nao confia so na RLS
         .maybeSingle()
       if (error) throw error
       if (!data) return null
