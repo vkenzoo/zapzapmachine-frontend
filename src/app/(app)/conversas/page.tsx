@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { toast } from 'sonner'
 import { api } from '@/services/api'
-import type { Conversa, Mensagem } from '@/types'
+import type { Conversa, Mensagem, InstanciaWhatsapp } from '@/types'
 import { ConversaList } from '@/components/conversas/conversa-list'
 import { ChatView } from '@/components/conversas/chat-view'
 import { EmptyChat } from '@/components/conversas/empty-chat'
@@ -19,6 +19,8 @@ export default function ConversasPage() {
   const [conversaSelecionadaId, setConversaSelecionadaId] = useState<string | null>(null)
   const [loadingConversas, setLoadingConversas] = useState(true)
   const [loadingMensagens, setLoadingMensagens] = useState(false)
+  const [instancias, setInstancias] = useState<InstanciaWhatsapp[]>([])
+  const [instanciaFiltradaId, setInstanciaFiltradaId] = useState<string | null>(null)
 
   // Som de notificacao (cria AudioContext uma unica vez)
   const audioCtxRef = useRef<AudioContext | null>(null)
@@ -45,9 +47,25 @@ export default function ConversasPage() {
     setLoadingConversas(false)
   }, [])
 
+  const carregarInstancias = useCallback(async () => {
+    try {
+      const data = await api.whatsapp.listarInstancias()
+      setInstancias(data)
+    } catch {
+      // silencioso — se falhar, dropdown só não aparece
+    }
+  }, [])
+
   useEffect(() => {
     carregarConversas()
-  }, [carregarConversas])
+    carregarInstancias()
+  }, [carregarConversas, carregarInstancias])
+
+  // Filtra conversas pelo dropdown (null = todas)
+  const conversasFiltradas = useMemo(() => {
+    if (!instanciaFiltradaId) return conversas
+    return conversas.filter((c) => c.instanciaWhatsappId === instanciaFiltradaId)
+  }, [conversas, instanciaFiltradaId])
 
   const conversaSelecionada = conversas.find((c) => c.id === conversaSelecionadaId) ?? null
 
@@ -168,10 +186,15 @@ export default function ConversasPage() {
         )}
       >
         <ConversaList
-          conversas={conversas}
+          conversas={conversasFiltradas}
           conversaSelecionadaId={conversaSelecionadaId}
           onSelecionar={handleSelecionar}
           loading={loadingConversas}
+          instancias={instancias}
+          instanciaFiltradaId={instanciaFiltradaId}
+          onChangeInstancia={setInstanciaFiltradaId}
+          totalSemFiltro={conversas.length}
+          contagemPorInstancia={conversas}
         />
       </div>
 

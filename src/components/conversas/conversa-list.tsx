@@ -1,17 +1,39 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import type { Conversa } from '@/types'
+import type { Conversa, InstanciaWhatsapp } from '@/types'
 import { ConversaListItem } from './conversa-list-item'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Search, MessageSquare } from 'lucide-react'
+
+const TODAS = '__all__'
+
+const statusDot = (status: InstanciaWhatsapp['status']): string => {
+  if (status === 'CONECTADO') return 'bg-emerald-500'
+  if (status === 'CONECTANDO') return 'bg-yellow-500'
+  return 'bg-gray-400'
+}
 
 interface ConversaListProps {
   conversas: Conversa[]
   conversaSelecionadaId: string | null
   onSelecionar: (id: string) => void
   loading: boolean
+  instancias?: InstanciaWhatsapp[]
+  instanciaFiltradaId?: string | null
+  onChangeInstancia?: (id: string | null) => void
+  /** Total antes do filtro de instância (pra mostrar no dropdown "Todas") */
+  totalSemFiltro?: number
+  /** Todas as conversas (sem filtro) pra calcular contagem por instância */
+  contagemPorInstancia?: Conversa[]
 }
 
 export const ConversaList = ({
@@ -19,6 +41,11 @@ export const ConversaList = ({
   conversaSelecionadaId,
   onSelecionar,
   loading,
+  instancias = [],
+  instanciaFiltradaId = null,
+  onChangeInstancia,
+  totalSemFiltro,
+  contagemPorInstancia = [],
 }: ConversaListProps) => {
   const [busca, setBusca] = useState('')
   const [tab, setTab] = useState<'todas' | 'nao-lidas'>('todas')
@@ -48,6 +75,55 @@ export const ConversaList = ({
     <div className="flex flex-col h-full bg-card border-r border-border/50">
       <div className="p-4 border-b border-border/50 space-y-3">
         <h2 className="text-[17px] font-semibold tracking-[-0.01em]">Conversas</h2>
+
+        {instancias.length > 0 && onChangeInstancia && (
+          <Select
+            value={instanciaFiltradaId ?? TODAS}
+            onValueChange={(v) => {
+              if (!v) return
+              onChangeInstancia(v === TODAS ? null : v)
+            }}
+          >
+            <SelectTrigger className="h-9 rounded-xl text-[12px] bg-muted/50 border-transparent">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={TODAS}>
+                <span className="flex items-center gap-2 text-[13px]">
+                  Todas as conexões
+                  <span className="text-muted-foreground text-[11px]">
+                    ({totalSemFiltro ?? contagemPorInstancia.length})
+                  </span>
+                </span>
+              </SelectItem>
+              {instancias.map((inst) => {
+                const count = contagemPorInstancia.filter(
+                  (c) => c.instanciaWhatsappId === inst.id
+                ).length
+                return (
+                  <SelectItem key={inst.id} value={inst.id}>
+                    <span className="flex items-center gap-2 text-[13px]">
+                      <span
+                        className={`h-2 w-2 rounded-full shrink-0 ${statusDot(inst.status)}`}
+                      />
+                      <span className="truncate max-w-[150px]">
+                        {inst.nomeInstancia}
+                      </span>
+                      {inst.numeroConectado && (
+                        <span className="text-muted-foreground text-[11px] truncate">
+                          {inst.numeroConectado}
+                        </span>
+                      )}
+                      <span className="text-muted-foreground text-[11px] ml-auto">
+                        ({count})
+                      </span>
+                    </span>
+                  </SelectItem>
+                )
+              })}
+            </SelectContent>
+          </Select>
+        )}
 
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

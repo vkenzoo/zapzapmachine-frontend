@@ -145,6 +145,7 @@ type ConversaRow = {
   status: string
   avatar_cor: string
   agente_id: string | null
+  instancia_whatsapp_id: string | null
   criado_em: string
 }
 
@@ -160,6 +161,7 @@ export const conversaFromRow = (row: ConversaRow): Conversa => ({
   status: row.status as Conversa['status'],
   avatarCor: row.avatar_cor,
   agenteId: row.agente_id ?? null,
+  instanciaWhatsappId: row.instancia_whatsapp_id ?? null,
   criadoEm: row.criado_em,
 })
 

@@ -231,6 +231,7 @@ export interface Conversa {
   status: StatusConversa
   avatarCor: string
   agenteId?: string | null
+  instanciaWhatsappId?: string | null
   criadoEm: string
 }
 
