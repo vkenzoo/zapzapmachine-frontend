@@ -1,6 +1,5 @@
 'use client'
 
-import { useAuth } from '@/hooks/use-auth'
 import { Sidebar } from '@/components/layout/sidebar'
 import { Topbar } from '@/components/layout/topbar'
 
@@ -9,16 +8,9 @@ export default function AppLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { isLoading } = useAuth()
-
-  if (isLoading) {
-    return (
-      <div className="flex h-dvh items-center justify-center">
-        <div className="w-5 h-5 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-      </div>
-    )
-  }
-
+  // Renderiza layout imediatamente (sem esperar auth).
+  // Middleware ja protege rotas nao-autenticadas redirecionando pra /login.
+  // Paginas individuais mostram skeleton proprio enquanto dados carregam.
   return (
     <div className="flex h-dvh overflow-hidden bg-background">
       <Sidebar />

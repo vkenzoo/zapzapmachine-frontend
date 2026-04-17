@@ -64,22 +64,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
 
   useEffect(() => {
-    // Carrega sessao inicial
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    // Carrega sessao inicial — libera isLoading assim que souber SE ha sessao
+    // (nao espera o carregamento do perfil, que roda em background).
+    supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
-        const perfil = await carregarPerfil(session.user.id, session.user.email ?? '')
-        setUsuario(perfil)
-        pingLogin()
+        // Nao bloqueia a UI: perfil carrega em background
+        carregarPerfil(session.user.id, session.user.email ?? '').then((perfil) => {
+          if (perfil) setUsuario(perfil)
+        })
+        pingLogin() // fire-and-forget
       }
       setIsLoading(false)
     })
 
     // Subscribe em mudancas de auth
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         if (event === 'SIGNED_IN' && session?.user) {
-          const perfil = await carregarPerfil(session.user.id, session.user.email ?? '')
-          setUsuario(perfil)
+          carregarPerfil(session.user.id, session.user.email ?? '').then((perfil) => {
+            if (perfil) setUsuario(perfil)
+          })
           pingLogin()
         } else if (event === 'SIGNED_OUT') {
           setUsuario(null)
