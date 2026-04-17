@@ -28,6 +28,9 @@ export const updateSession = async (request: NextRequest) => {
 
   const { pathname } = request.nextUrl
 
+  // Landing page publica (/)
+  const isLandingRoute = pathname === '/'
+
   // Rotas publicas (auth)
   const isAuthRoute =
     pathname.startsWith('/login') ||
@@ -35,10 +38,15 @@ export const updateSession = async (request: NextRequest) => {
     pathname.startsWith('/recuperar-senha') ||
     pathname.startsWith('/callback')
 
-  if (!user && !isAuthRoute) {
+  // Rotas totalmente publicas (nao requer auth)
+  const isPublicRoute = isLandingRoute || isAuthRoute
+
+  if (!user && !isPublicRoute) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
+  // Usuario logado acessando /login, /signup etc — manda pro dashboard
+  // Landing (/) sempre acessivel (mesmo logado)
   if (user && isAuthRoute) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
