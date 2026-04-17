@@ -10,9 +10,8 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from '@/components/ui/select'
-import { Search, MessageSquare } from 'lucide-react'
+import { Search, MessageSquare, ChevronDown, Phone, X } from 'lucide-react'
 
 const TODAS = '__all__'
 
@@ -76,54 +75,108 @@ export const ConversaList = ({
       <div className="p-4 border-b border-border/50 space-y-3">
         <h2 className="text-[17px] font-semibold tracking-[-0.01em]">Conversas</h2>
 
-        {instancias.length > 0 && onChangeInstancia && (
-          <Select
-            value={instanciaFiltradaId ?? TODAS}
-            onValueChange={(v) => {
-              if (!v) return
-              onChangeInstancia(v === TODAS ? null : v)
-            }}
-          >
-            <SelectTrigger className="h-9 rounded-xl text-[12px] bg-muted/50 border-transparent">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={TODAS}>
-                <span className="flex items-center gap-2 text-[13px]">
-                  Todas as conexões
-                  <span className="text-muted-foreground text-[11px]">
-                    ({totalSemFiltro ?? contagemPorInstancia.length})
-                  </span>
-                </span>
-              </SelectItem>
-              {instancias.map((inst) => {
-                const count = contagemPorInstancia.filter(
-                  (c) => c.instanciaWhatsappId === inst.id
-                ).length
-                return (
-                  <SelectItem key={inst.id} value={inst.id}>
-                    <span className="flex items-center gap-2 text-[13px]">
+        {instancias.length > 0 && onChangeInstancia && (() => {
+          const instanciaSelecionada = instanciaFiltradaId
+            ? instancias.find((i) => i.id === instanciaFiltradaId)
+            : null
+          const totalGeral = totalSemFiltro ?? contagemPorInstancia.length
+
+          return (
+            <div className="space-y-1.5">
+              <Select
+                value={instanciaFiltradaId ?? TODAS}
+                onValueChange={(v) => {
+                  if (!v) return
+                  onChangeInstancia(v === TODAS ? null : v)
+                }}
+              >
+                <SelectTrigger className="h-10 rounded-xl text-[13px] bg-muted/50 border-transparent hover:bg-muted/70 transition-colors">
+                  {/* Trigger customizado — nao usa SelectValue pra poder renderizar
+                      nome da instancia ao inves do UUID. */}
+                  {instanciaSelecionada ? (
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
                       <span
-                        className={`h-2 w-2 rounded-full shrink-0 ${statusDot(inst.status)}`}
+                        className={`h-2 w-2 rounded-full shrink-0 ${statusDot(
+                          instanciaSelecionada.status
+                        )}`}
                       />
-                      <span className="truncate max-w-[150px]">
-                        {inst.nomeInstancia}
+                      <span className="font-medium truncate">
+                        {instanciaSelecionada.nomeInstancia}
                       </span>
-                      {inst.numeroConectado && (
+                      {instanciaSelecionada.numeroConectado && (
                         <span className="text-muted-foreground text-[11px] truncate">
-                          {inst.numeroConectado}
+                          {instanciaSelecionada.numeroConectado}
                         </span>
                       )}
-                      <span className="text-muted-foreground text-[11px] ml-auto">
-                        ({count})
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <Phone className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                      <span className="font-medium">Todas as conexões</span>
+                      <span className="text-muted-foreground text-[11px]">
+                        ({totalGeral})
                       </span>
-                    </span>
+                    </div>
+                  )}
+                  <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={TODAS}>
+                    <div className="flex items-center gap-2 text-[13px] w-full">
+                      <Phone className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                      <span className="font-medium">Todas as conexões</span>
+                      <span className="text-muted-foreground text-[11px] ml-auto">
+                        {totalGeral}
+                      </span>
+                    </div>
                   </SelectItem>
-                )
-              })}
-            </SelectContent>
-          </Select>
-        )}
+                  {instancias.map((inst) => {
+                    const count = contagemPorInstancia.filter(
+                      (c) => c.instanciaWhatsappId === inst.id
+                    ).length
+                    return (
+                      <SelectItem key={inst.id} value={inst.id}>
+                        <div className="flex items-center gap-2 text-[13px] w-full">
+                          <span
+                            className={`h-2 w-2 rounded-full shrink-0 ${statusDot(inst.status)}`}
+                          />
+                          <span className="font-medium truncate max-w-[120px]">
+                            {inst.nomeInstancia}
+                          </span>
+                          {inst.numeroConectado && (
+                            <span className="text-muted-foreground text-[11px] truncate">
+                              {inst.numeroConectado}
+                            </span>
+                          )}
+                          <span className="text-muted-foreground text-[11px] ml-auto">
+                            {count}
+                          </span>
+                        </div>
+                      </SelectItem>
+                    )
+                  })}
+                </SelectContent>
+              </Select>
+
+              {/* Badge de filtro ativo — deixa super claro quando esta filtrado */}
+              {instanciaSelecionada && (
+                <div className="flex items-center justify-between gap-2 px-2 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900">
+                  <span className="text-[11px] text-blue-700 dark:text-blue-300">
+                    Vendo apenas conversas deste número
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => onChangeInstancia(null)}
+                    className="flex items-center gap-0.5 text-[11px] text-blue-700 dark:text-blue-300 hover:underline font-medium"
+                  >
+                    <X className="h-3 w-3" />
+                    limpar
+                  </button>
+                </div>
+              )}
+            </div>
+          )
+        })()}
 
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
