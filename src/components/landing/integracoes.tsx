@@ -1,10 +1,13 @@
 'use client'
 
+import { ProvedorLogo } from '@/components/integracoes/provedor-logo'
+import type { ProvedorCheckout } from '@/types'
+
 export const Integracoes = () => {
-  const logos = [
-    { nome: 'Hotmart', cor: '#F04E23', inicial: 'H' },
-    { nome: 'Kiwify', cor: '#00C853', inicial: 'K' },
-    { nome: 'Ticto', cor: '#00B4D8', inicial: 'T' },
+  const logos: { id: ProvedorCheckout; nome: string }[] = [
+    { id: 'HOTMART', nome: 'Hotmart' },
+    { id: 'KIWIFY', nome: 'Kiwify' },
+    { id: 'TICTO', nome: 'Ticto' },
   ]
 
   return (
@@ -16,19 +19,14 @@ export const Integracoes = () => {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12 animate-fade-up">
+        <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14 animate-fade-up">
           {logos.map((l) => (
             <div
-              key={l.nome}
-              className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0"
+              key={l.id}
+              className="flex items-center gap-3 hover:scale-105 transition-transform"
             >
-              <div
-                className="h-10 w-10 rounded-xl flex items-center justify-center text-white font-bold text-[14px] shadow-md"
-                style={{ backgroundColor: l.cor }}
-              >
-                {l.inicial}
-              </div>
-              <span className="text-zinc-900 font-semibold text-[16px] tracking-[-0.01em]">
+              <ProvedorLogo provedor={l.id} size={48} />
+              <span className="text-zinc-900 font-semibold text-[17px] tracking-[-0.01em]">
                 {l.nome}
               </span>
             </div>
