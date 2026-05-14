@@ -3,6 +3,7 @@ import { Integracoes } from '@/components/landing/integracoes'
 import { DemosTelas } from '@/components/landing/demos-telas'
 import { ComoFunciona } from '@/components/landing/como-funciona'
 import { ParaQuem } from '@/components/landing/para-quem'
+import { Pricing } from '@/components/landing/pricing'
 import { Faq } from '@/components/landing/faq'
 import { CtaFinal, Footer } from '@/components/landing/cta-final'
 
@@ -20,6 +21,7 @@ export default function HomePage() {
       <DemosTelas />
       <ComoFunciona />
       <ParaQuem />
+      <Pricing />
       <Faq />
       <CtaFinal />
       <Footer />
