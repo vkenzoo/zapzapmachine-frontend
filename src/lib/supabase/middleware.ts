@@ -45,6 +45,17 @@ export const updateSession = async (request: NextRequest) => {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
+  // Logado com must_change_password=true → força tela de trocar senha.
+  // Hub provisiona com essa flag quando cria o user.
+  const mustChangePwd = user?.user_metadata?.must_change_password === true
+  const changePwdExempt =
+    pathname.startsWith('/change-password') ||
+    pathname.startsWith('/api') ||
+    isLandingRoute
+  if (user && mustChangePwd && !changePwdExempt) {
+    return NextResponse.redirect(new URL('/change-password', request.url))
+  }
+
   // Usuario logado acessando /login, /signup etc — manda pro dashboard
   // Landing (/) sempre acessivel (mesmo logado)
   if (user && isAuthRoute) {
