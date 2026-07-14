@@ -31,10 +31,15 @@ export const updateSession = async (request: NextRequest) => {
   // Landing page publica (/)
   const isLandingRoute = pathname === '/'
 
+  // Signup publico desabilitado — provisionamento so via Hub Central.
+  // Redireciona qualquer tentativa pra /login com aviso.
+  if (pathname.startsWith('/signup')) {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
   // Rotas publicas (auth) — redirecionam logado pra /dashboard
   const isAuthRoute =
     pathname.startsWith('/login') ||
-    pathname.startsWith('/signup') ||
     pathname.startsWith('/recuperar-senha') ||
     pathname.startsWith('/callback')
 

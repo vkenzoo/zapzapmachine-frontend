@@ -34,15 +34,9 @@ export const Hero = () => {
           <div className="flex items-center gap-3">
             <Link
               href="/login"
-              className="text-[13px] text-white/80 hover:text-white transition-colors"
-            >
-              Entrar
-            </Link>
-            <Link
-              href="/signup"
               className="rounded-full bg-white text-zinc-950 px-4 py-2 text-[13px] font-medium hover:bg-white/90 transition-colors"
             >
-              Criar conta
+              Entrar
             </Link>
           </div>
         </nav>
@@ -74,10 +68,10 @@ export const Hero = () => {
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-3 mb-6">
               <Link
-                href="/signup"
+                href="#pricing"
                 className="group inline-flex items-center justify-center gap-2 rounded-full bg-white text-zinc-950 px-6 py-3.5 text-[15px] font-semibold hover:bg-blue-50 transition-all shadow-lg shadow-white/10"
               >
-                Criar minha conta grátis
+                Quero meu acesso
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <Link
@@ -92,7 +86,7 @@ export const Hero = () => {
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] text-white/50">
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                Sem cartão de crédito
+                Acesso mediante contratação
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
@@ -100,7 +94,7 @@ export const Hero = () => {
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                Cancele quando quiser
+                7 dias de garantia
               </span>
             </div>
           </div>

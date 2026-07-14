@@ -119,18 +119,21 @@ export default function LoginPage() {
       </div>
 
       <p className="text-center text-[13px] text-muted-foreground mt-5">
-        Nao tem conta?{' '}
-        <Link href="/signup" className="text-primary font-medium hover:underline">
-          Criar conta
-        </Link>
-      </p>
-      <p className="text-center text-[12px] text-muted-foreground mt-2">
         <Link
           href="/recuperar-senha"
           className="hover:text-foreground transition-colors duration-200"
         >
           Esqueci minha senha
         </Link>
+      </p>
+      <p className="text-center text-[11px] text-muted-foreground mt-3">
+        Ainda não é cliente?{' '}
+        <a
+          href="mailto:vinnykenzo@gmail.com?subject=Quero%20acesso%20ao%20GA%20Sales%20Machine"
+          className="text-primary font-medium hover:underline"
+        >
+          Solicite seu acesso
+        </a>
       </p>
     </div>
   )

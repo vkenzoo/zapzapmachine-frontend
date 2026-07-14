@@ -33,33 +33,33 @@ export const CtaFinal = () => {
 
         {/* CTA duplo */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
-          <Link
-            href="/signup"
+          <a
+            href="mailto:vinnykenzo@gmail.com?subject=Quero%20acesso%20ao%20GA%20Sales%20Machine&body=Ol%C3%A1!%20Quero%20contratar%20o%20plano%20anual%20do%20GA%20Sales%20Machine.%20Como%20procedo%3F"
             className="group inline-flex items-center justify-center gap-2 rounded-full bg-white text-zinc-950 px-8 py-4 text-[16px] font-bold hover:bg-blue-50 transition-all shadow-2xl shadow-blue-500/30"
           >
-            Criar minha conta agora
+            Quero meu acesso
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-          </Link>
+          </a>
           <Link
             href="/login"
             className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 text-white px-8 py-4 text-[16px] font-medium hover:bg-white/10 transition-colors backdrop-blur"
           >
-            Já tenho conta
+            Já sou cliente
           </Link>
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[12px] text-white/50">
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            Sem cartão
+            Acesso mediante contratação
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            Conecta em 2 min
+            Ativação em minutos
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            Cancela quando quiser
+            7 dias de garantia
           </span>
         </div>
       </div>

@@ -18,7 +18,7 @@ const INCLUSO = [
 
 export const Pricing = () => {
   return (
-    <section className="relative bg-white py-24 lg:py-32">
+    <section id="pricing" className="relative bg-white py-24 lg:py-32 scroll-mt-8">
       <div className="max-w-4xl mx-auto px-6">
         <div className="text-center mb-12 animate-fade-up">
           <span className="inline-block text-[12px] font-semibold text-blue-600 uppercase tracking-wider mb-3">
@@ -92,13 +92,13 @@ export const Pricing = () => {
                     </div>
                   </div>
 
-                  <Link
-                    href="/signup"
+                  <a
+                    href="mailto:vinnykenzo@gmail.com?subject=Quero%20acesso%20ao%20GA%20Sales%20Machine&body=Ol%C3%A1!%20Quero%20contratar%20o%20plano%20anual%20do%20GA%20Sales%20Machine.%20Como%20procedo%3F"
                     className="group flex items-center justify-center gap-2 w-full rounded-full bg-white text-zinc-950 px-6 py-4 text-[15px] font-semibold hover:bg-blue-50 transition-all shadow-lg shadow-white/10 mb-4"
                   >
                     Quero meu acesso
                     <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-                  </Link>
+                  </a>
 
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-2 text-[11px] text-white/50">
