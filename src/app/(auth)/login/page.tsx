@@ -125,13 +125,12 @@ export default function LoginPage() {
         </Link>
       </p>
       <p className="text-center text-[12px] text-muted-foreground mt-2">
-        <button
-          type="button"
+        <Link
+          href="/recuperar-senha"
           className="hover:text-foreground transition-colors duration-200"
-          onClick={() => toast.info('Funcionalidade em breve')}
         >
           Esqueci minha senha
-        </button>
+        </Link>
       </p>
     </div>
   )

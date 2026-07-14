@@ -31,15 +31,19 @@ export const updateSession = async (request: NextRequest) => {
   // Landing page publica (/)
   const isLandingRoute = pathname === '/'
 
-  // Rotas publicas (auth)
+  // Rotas publicas (auth) — redirecionam logado pra /dashboard
   const isAuthRoute =
     pathname.startsWith('/login') ||
     pathname.startsWith('/signup') ||
     pathname.startsWith('/recuperar-senha') ||
     pathname.startsWith('/callback')
 
+  // Recovery: publica MAS NAO redireciona logado
+  // (Supabase seta sessao PASSWORD_RECOVERY quando user clica no link do email)
+  const isRecoveryRoute = pathname.startsWith('/redefinir-senha')
+
   // Rotas totalmente publicas (nao requer auth)
-  const isPublicRoute = isLandingRoute || isAuthRoute
+  const isPublicRoute = isLandingRoute || isAuthRoute || isRecoveryRoute
 
   if (!user && !isPublicRoute) {
     return NextResponse.redirect(new URL('/login', request.url))
@@ -51,7 +55,8 @@ export const updateSession = async (request: NextRequest) => {
   const changePwdExempt =
     pathname.startsWith('/change-password') ||
     pathname.startsWith('/api') ||
-    isLandingRoute
+    isLandingRoute ||
+    isRecoveryRoute
   if (user && mustChangePwd && !changePwdExempt) {
     return NextResponse.redirect(new URL('/change-password', request.url))
   }
