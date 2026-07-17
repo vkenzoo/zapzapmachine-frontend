@@ -65,7 +65,21 @@ export default function RedefinirSenhaPage() {
     setSubmitting(true)
     try {
       const supabase = createClient()
-      const { error } = await supabase.auth.updateUser({ password: data.next })
+
+      // Puxa metadata atual pra preservar campos e limpar apenas must_change_password.
+      // Sem isso, users provisionados pelo Hub caem em loop no /change-password.
+      const {
+        data: { user: userAtual },
+      } = await supabase.auth.getUser()
+
+      const { error } = await supabase.auth.updateUser({
+        password: data.next,
+        data: {
+          ...(userAtual?.user_metadata ?? {}),
+          must_change_password: false,
+          password_changed_at: new Date().toISOString(),
+        },
+      })
 
       if (error) {
         toast.error(
